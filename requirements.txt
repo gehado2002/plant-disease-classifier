@@ -1,0 +1,16 @@
+# Core app
+streamlit>=1.38,<2
+
+# Model inference
+# The provided plant_disease_cnn.keras was saved with Keras 3.13.2, which
+# requires TensorFlow >= 2.20 (Keras 3.13.x depends on tensorflow-base>=2.20).
+# Pin a floor version rather than an exact one so security patches can be
+# picked up; if you hit a load error, install the exact TF version whose
+# bundled Keras matches (`pip show keras` after installing tensorflow).
+tensorflow>=2.20,<3
+
+# Image handling
+pillow>=10.0,<12
+
+# Array operations
+numpy>=1.26,<3
