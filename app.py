@@ -1,3 +1,4 @@
+import html
 import streamlit as st
 from PIL import Image
 
@@ -10,7 +11,9 @@ from src.inference import predict_single_image
 
 st.set_page_config(
     page_title="Plant Disease Classifier",
-    layout="wide"
+    page_icon="🌿",
+    layout="centered",
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -22,35 +25,31 @@ st.markdown(
     """
     <style>
 
-    /* =====================================================
-       Main Background
-       ===================================================== */
+    /* ---------- Global ---------- */
 
     .stApp {
         background:
             radial-gradient(
                 circle at 10% 10%,
-                rgba(151, 190, 155, 0.14),
+                rgba(126, 166, 128, 0.12),
                 transparent 28%
             ),
             radial-gradient(
-                circle at 90% 15%,
-                rgba(205, 180, 120, 0.10),
-                transparent 25%
+                circle at 90% 85%,
+                rgba(191, 151, 107, 0.10),
+                transparent 28%
             ),
-            #fbfcf9;
+            #F5F7F2;
+        color: #20352A;
     }
 
     .block-container {
-        max-width: 1180px;
-        padding-top: 2rem;
+        max-width: 900px;
+        padding-top: 3rem;
         padding-bottom: 3rem;
     }
 
-
-    /* =====================================================
-       Hide Default Streamlit Decoration
-       ===================================================== */
+    /* ---------- Hide Streamlit Elements ---------- */
 
     #MainMenu {
         visibility: hidden;
@@ -61,306 +60,350 @@ st.markdown(
     }
 
     header {
-        visibility: hidden;
+        background: transparent !important;
     }
 
-
-    /* =====================================================
-       Hero
-       ===================================================== */
+    /* ---------- Hero ---------- */
 
     .hero {
-        position: relative;
-        overflow: hidden;
+        text-align: center;
+        padding: 1.5rem 1rem 2rem;
+    }
 
-        padding: 3.2rem 2rem;
-        margin-bottom: 2rem;
+    .hero-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        border-radius: 28px;
+        background: linear-gradient(
+            145deg,
+            #E4EFDF,
+            #D0E1CB
+        );
 
-        background:
-            linear-gradient(
-                135deg,
-                #e7f2e8 0%,
-                #f5f8f1 52%,
-                #edf4e9 100%
-            );
+        border: 1px solid #C5D8BF;
+        border-radius: 22px;
 
-        border: 1px solid #d7e5d7;
+        font-size: 2rem;
 
         box-shadow:
-            0 12px 35px rgba(45, 83, 53, 0.08);
-
-        text-align: center;
-    }
-
-    .hero::before {
-        content: "🌿";
-        position: absolute;
-        left: 28px;
-        top: 18px;
-        font-size: 3rem;
-        opacity: 0.18;
-        transform: rotate(-18deg);
-    }
-
-    .hero::after {
-        content: "🍃";
-        position: absolute;
-        right: 30px;
-        bottom: 15px;
-        font-size: 3.5rem;
-        opacity: 0.18;
-        transform: rotate(15deg);
+            0 12px 30px rgba(45, 82, 57, 0.10);
     }
 
     .hero-title {
-        color: #234f32;
-        font-size: 3rem;
-        font-weight: 750;
+        color: #173C2A;
+        font-size: 2.7rem;
+        font-weight: 800;
         letter-spacing: -1px;
+        line-height: 1.15;
         margin-bottom: 0.6rem;
     }
 
     .hero-subtitle {
-        color: #66756a;
-        font-size: 1.05rem;
+        max-width: 620px;
+        margin: 0 auto;
+        color: #6D7C72;
+        font-size: 1rem;
         line-height: 1.7;
-        max-width: 680px;
-        margin: auto;
     }
 
-
-    /* =====================================================
-       Upload Section
-       ===================================================== */
+    /* ---------- Upload Section ---------- */
 
     .upload-title {
-        color: #315c3b;
-        font-size: 1.45rem;
+        color: #244B34;
+        font-size: 1.05rem;
         font-weight: 700;
-        margin-bottom: 0.7rem;
+        margin: 0 0 0.7rem 0.2rem;
     }
 
     [data-testid="stFileUploader"] {
-        background: #ffffff;
-        border: 1.5px dashed #a9c5ad;
-        border-radius: 22px;
-        padding: 0.8rem;
-        transition: all 0.25s ease;
-    }
-
-    [data-testid="stFileUploader"]:hover {
-        border-color: #5d8b67;
-        box-shadow: 0 8px 24px rgba(57, 102, 67, 0.08);
+        margin-top: 0.2rem;
     }
 
     [data-testid="stFileUploaderDropzone"] {
-        background: #f7faf6;
+        background: #FBFCF9 !important;
+        border: 2px dashed #A9C0AA !important;
+        border-radius: 22px !important;
+        padding: 2rem !important;
+        transition: all 0.25s ease;
+    }
+
+    [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #5F8968 !important;
+        background: #F7FAF5 !important;
+        box-shadow:
+            0 12px 30px rgba(48, 89, 59, 0.08);
+    }
+
+    [data-testid="stFileUploaderDropzoneInstructions"] {
+        color: #5E6F63 !important;
+    }
+
+    [data-testid="stFileUploaderDropzoneInstructions"] span {
+        color: #244B34 !important;
+        font-weight: 600;
+    }
+
+    [data-testid="stFileUploaderDropzone"] button {
+        background: #315F43 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"] button:hover {
+        background: #244B34 !important;
+    }
+
+    /* ---------- Empty State ---------- */
+
+    .empty-state {
+        margin-top: 1rem;
+        padding: 1.1rem;
+        text-align: center;
+
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid #DCE5DA;
         border-radius: 16px;
+
+        color: #718078;
+        font-size: 0.92rem;
     }
 
+    /* ---------- Image Card ---------- */
 
-    /* =====================================================
-       Image Container
-       ===================================================== */
-
-    .image-title {
-        color: #315c3b;
-        font-size: 1.35rem;
+    .section-title {
+        color: #244B34;
+        font-size: 1.05rem;
         font-weight: 700;
-        margin-bottom: 0.8rem;
+        margin: 1.8rem 0 0.8rem;
     }
 
-
-    /* =====================================================
-       Prediction Container
-       ===================================================== */
-
-    .prediction-title {
-        color: #315c3b;
-        font-size: 1.35rem;
-        font-weight: 700;
-        margin-bottom: 0.8rem;
+    .image-card {
+        background: #FBFCF9;
+        border: 1px solid #DCE5DA;
+        border-radius: 22px;
+        padding: 0.7rem;
+        box-shadow:
+            0 12px 30px rgba(35, 66, 44, 0.07);
     }
+
+    /* ---------- Result Cards ---------- */
 
     .result-card {
-        background: #ffffff;
+        height: 100%;
+        min-height: 145px;
 
-        border: 1px solid #dce8dd;
-        border-radius: 18px;
+        background: #FBFCF9;
 
-        padding: 1.15rem 1.35rem;
-        margin-bottom: 0.85rem;
+        border: 1px solid #DCE5DA;
+        border-radius: 20px;
+
+        padding: 1.25rem;
 
         box-shadow:
-            0 5px 18px rgba(42, 75, 48, 0.055);
+            0 10px 25px rgba(35, 66, 44, 0.055);
 
-        transition: transform 0.2s ease,
-                    box-shadow 0.2s ease;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     .result-card:hover {
-        transform: translateY(-2px);
-
+        transform: translateY(-3px);
         box-shadow:
-            0 9px 25px rgba(42, 75, 48, 0.09);
+            0 15px 32px rgba(35, 66, 44, 0.09);
+    }
+
+    .result-icon {
+        font-size: 1.45rem;
+        margin-bottom: 0.7rem;
     }
 
     .result-label {
-        color: #829087;
-        font-size: 0.82rem;
+        color: #78867D;
+        font-size: 0.78rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.7px;
-        margin-bottom: 0.3rem;
+        letter-spacing: 0.8px;
+        margin-bottom: 0.35rem;
     }
 
     .result-value {
-        color: #294f34;
-        font-size: 1.25rem;
-        font-weight: 700;
-        line-height: 1.4;
+        color: #203D2C;
+        font-size: 1.15rem;
+        font-weight: 750;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
     }
 
+    /* ---------- Status ---------- */
 
-    /* =====================================================
-       Health Status
-       ===================================================== */
+    .status-healthy {
+        display: inline-block;
 
-    .healthy {
-        background: #edf7ef;
-        border: 1px solid #cce2cf;
-        color: #347247;
+        padding: 0.45rem 0.8rem;
 
-        border-radius: 16px;
+        background: #E4F1E5;
+        color: #32633E;
 
-        padding: 0.95rem 1.2rem;
-        margin-bottom: 0.85rem;
+        border: 1px solid #C7DEC9;
+        border-radius: 999px;
 
-        text-align: center;
-
-        font-size: 1rem;
+        font-size: 0.88rem;
         font-weight: 700;
     }
 
-    .diseased {
-        background: #faf1e9;
-        border: 1px solid #ead7c5;
-        color: #96613e;
+    .status-diseased {
+        display: inline-block;
 
-        border-radius: 16px;
+        padding: 0.45rem 0.8rem;
 
-        padding: 0.95rem 1.2rem;
-        margin-bottom: 0.85rem;
+        background: #F6E7E2;
+        color: #98594D;
 
-        text-align: center;
+        border: 1px solid #E9CCC4;
+        border-radius: 999px;
 
-        font-size: 1rem;
+        font-size: 0.88rem;
         font-weight: 700;
     }
 
+    /* ---------- Confidence ---------- */
 
-    /* =====================================================
-       Progress Bar
-       ===================================================== */
-
-    [data-testid="stProgressBar"] {
-        background-color: #e7eee8;
+    .confidence-box {
+        background: #FBFCF9;
+        border: 1px solid #DCE5DA;
         border-radius: 20px;
+        padding: 1.25rem;
+        margin-top: 1rem;
+
+        box-shadow:
+            0 10px 25px rgba(35, 66, 44, 0.055);
     }
 
-    [data-testid="stProgressBar"] > div > div {
-        background-color: #6d9b75;
-        border-radius: 20px;
+    .confidence-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 0.7rem;
     }
 
+    .confidence-label {
+        color: #66756B;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
 
-    /* =====================================================
-       Buttons
-       ===================================================== */
+    .confidence-value {
+        color: #315F43;
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
 
-    .stButton > button {
+    .confidence-track {
         width: 100%;
+        height: 9px;
 
-        height: 2.8rem;
-
-        border-radius: 13px;
-
-        border: 1px solid #b8cfbb;
-
-        background: #eef5ef;
-
-        color: #315c3b;
-
-        font-size: 0.95rem;
-        font-weight: 650;
-
-        transition: all 0.2s ease;
+        background: #E3E9E1;
+        border-radius: 999px;
+        overflow: hidden;
     }
 
-    .stButton > button:hover {
-        border-color: #6f9a77;
+    .confidence-fill {
+        height: 100%;
 
-        background: #e1eee3;
+        background: linear-gradient(
+            90deg,
+            #6F9677,
+            #315F43
+        );
 
-        color: #234f32;
-
-        transform: translateY(-1px);
+        border-radius: 999px;
     }
 
-
-    /* =====================================================
-       Alerts
-       ===================================================== */
-
-    [data-testid="stAlert"] {
-        border-radius: 15px;
-    }
-
-
-    /* =====================================================
-       Spinner
-       ===================================================== */
+    /* ---------- Loading ---------- */
 
     .stSpinner > div {
-        border-top-color: #5f8d68 !important;
+        border-top-color: #315F43 !important;
     }
 
+    /* ---------- Error ---------- */
 
-    /* =====================================================
-       Footer
-       ===================================================== */
+    .stAlert {
+        border-radius: 14px !important;
+    }
+
+    /* ---------- Footer ---------- */
 
     .footer {
-        margin-top: 3rem;
+        text-align: center;
+        margin-top: 2.8rem;
         padding-top: 1.3rem;
 
-        text-align: center;
+        border-top: 1px solid #DCE5DA;
 
-        color: #8b978e;
-
+        color: #819087;
         font-size: 0.78rem;
+        line-height: 1.8;
+    }
 
-        border-top: 1px solid #e2e9e2;
+    .footer span {
+        color: #A0AAA3;
+    }
+
+    /* ---------- Mobile ---------- */
+
+    @media (max-width: 640px) {
+
+        .block-container {
+            padding-top: 1.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .hero-title {
+            font-size: 2.1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+        }
+
+        [data-testid="stFileUploaderDropzone"] {
+            padding: 1.2rem !important;
+        }
+
+        .result-card {
+            min-height: 125px;
+        }
     }
 
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 
 # =========================================================
-# Hero Section
+# Hero
 # =========================================================
 
 st.markdown(
     """
     <div class="hero">
 
+        <div class="hero-icon">
+            🌿
+        </div>
+
         <div class="hero-title">
-            🌿 Plant Disease Classifier
+            Plant Disease Classifier
         </div>
 
         <div class="hero-subtitle">
@@ -370,7 +413,7 @@ st.markdown(
 
     </div>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 
@@ -379,19 +422,31 @@ st.markdown(
 # =========================================================
 
 st.markdown(
-    """
-    <div class="upload-title">
-        📤 Upload a Leaf Image
-    </div>
-    """,
-    unsafe_allow_html=True
+    '<div class="upload-title">📤 Upload a Leaf Image</div>',
+    unsafe_allow_html=True,
 )
 
 uploaded_file = st.file_uploader(
-    "Choose an image",
+    label="Upload a leaf image",
     type=["jpg", "jpeg", "png", "webp"],
-    help="Supported formats: JPG, JPEG, PNG, WEBP"
+    label_visibility="collapsed",
 )
+
+
+# =========================================================
+# Empty State
+# =========================================================
+
+if uploaded_file is None:
+
+    st.markdown(
+        """
+        <div class="empty-state">
+            🍃 Upload a leaf image to begin
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 # =========================================================
@@ -402,175 +457,207 @@ if uploaded_file is not None:
 
     try:
 
+        # Load image
         image = Image.open(uploaded_file).convert("RGB")
 
-        image_col, result_col = st.columns(
-            [1.05, 1],
-            gap="large"
+        # Image section
+        st.markdown(
+            '<div class="section-title">🖼️ Uploaded Leaf</div>',
+            unsafe_allow_html=True,
         )
 
+        st.markdown(
+            '<div class="image-card">',
+            unsafe_allow_html=True,
+        )
 
-        # -----------------------------------------------------
-        # Image
-        # -----------------------------------------------------
+        st.image(
+            image,
+            use_container_width=True,
+        )
 
-        with image_col:
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
-            st.markdown(
-                """
-                <div class="image-title">
-                    🖼️ Your Leaf
-                </div>
-                """,
-                unsafe_allow_html=True
+        # Prediction
+        with st.spinner("Analyzing..."):
+            result = predict_single_image(image)
+
+        # Safely convert values to strings
+        plant = html.escape(str(result.plant))
+        disease = html.escape(str(result.disease))
+        health_status = html.escape(str(result.health_status))
+
+        confidence = float(result.confidence)
+
+        # Convert 0–1 confidence to percentage
+        if confidence <= 1:
+            confidence_percent = confidence * 100
+        else:
+            confidence_percent = confidence
+
+        confidence_percent = max(
+            0,
+            min(100, confidence_percent)
+        )
+
+        # Determine status
+        status_lower = health_status.lower()
+
+        if "healthy" in status_lower:
+            status_html = (
+                f'<span class="status-healthy">'
+                f'🌱 {health_status}'
+                f'</span>'
+            )
+        else:
+            status_html = (
+                f'<span class="status-diseased">'
+                f'⚠️ {health_status}'
+                f'</span>'
             )
 
-            st.image(
-                image,
-                width="stretch"
-            )
+        # Results title
+        st.markdown(
+            '<div class="section-title">🔍 Prediction Results</div>',
+            unsafe_allow_html=True,
+        )
 
+        # First row
+        col1, col2 = st.columns(2, gap="medium")
 
-        # -----------------------------------------------------
-        # Results
-        # -----------------------------------------------------
-
-        with result_col:
-
-            st.markdown(
-                """
-                <div class="prediction-title">
-                    🔎 Prediction
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-            with st.spinner("Analyzing the leaf..."):
-
-                result = predict_single_image(image)
-
-
-            # Plant
-            st.markdown(
-                f"""
-                <div class="result-card">
-
-                    <div class="result-label">
-                        🌱 Plant
-                    </div>
-
-                    <div class="result-value">
-                        {result.plant}
-                    </div>
-
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            # Disease
-            st.markdown(
-                f"""
-                <div class="result-card">
-
-                    <div class="result-label">
-                        🦠 Disease
-                    </div>
-
-                    <div class="result-value">
-                        {result.disease}
-                    </div>
-
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            # Health Status
-            if result.health_status == "Healthy":
-
-                st.markdown(
-                    """
-                    <div class="healthy">
-                        💚 Healthy
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-            else:
-
-                st.markdown(
-                    """
-                    <div class="diseased">
-                        ⚠️ Diseased
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-
-            # Confidence
-            confidence = float(result.confidence)
+        with col1:
 
             st.markdown(
                 f"""
                 <div class="result-card">
 
+                    <div class="result-icon">
+                        🌱
+                    </div>
+
                     <div class="result-label">
-                        📊 Confidence
+                        Plant
                     </div>
 
                     <div class="result-value">
-                        {confidence:.2%}
+                        {plant}
                     </div>
 
                 </div>
                 """,
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
 
-            st.progress(confidence)
+        with col2:
 
+            st.markdown(
+                f"""
+                <div class="result-card">
 
-            # Low confidence warning
-            if confidence < 0.70:
+                    <div class="result-icon">
+                        🦠
+                    </div>
 
-                st.warning(
-                    "The model has low confidence in this prediction. "
-                    "Try uploading a clear image containing a single leaf."
-                )
+                    <div class="result-label">
+                        Disease
+                    </div>
 
+                    <div class="result-value">
+                        {disease}
+                    </div>
 
-    except Exception:
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        # Second row
+        col3, col4 = st.columns(2, gap="medium")
+
+        with col3:
+
+            st.markdown(
+                f"""
+                <div class="result-card">
+
+                    <div class="result-icon">
+                        💚
+                    </div>
+
+                    <div class="result-label">
+                        Health Status
+                    </div>
+
+                    <div class="result-value">
+                        {status_html}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        with col4:
+
+            st.markdown(
+                f"""
+                <div class="result-card">
+
+                    <div class="result-icon">
+                        ✨
+                    </div>
+
+                    <div class="result-label">
+                        Confidence
+                    </div>
+
+                    <div class="result-value">
+                        {confidence_percent:.2f}%
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        # Confidence bar
+        st.markdown(
+            f"""
+            <div class="confidence-box">
+
+                <div class="confidence-header">
+
+                    <div class="confidence-label">
+                        Prediction Confidence
+                    </div>
+
+                    <div class="confidence-value">
+                        {confidence_percent:.2f}%
+                    </div>
+
+                </div>
+
+                <div class="confidence-track">
+                    <div
+                        class="confidence-fill"
+                        style="width: {confidence_percent:.2f}%;">
+                    </div>
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    except Exception as e:
 
         st.error(
-            "Unable to process the uploaded image. "
-            "Please upload a valid JPG, JPEG, PNG, or WEBP image."
+            "Unable to analyze this image. "
+            "Please upload a valid plant leaf image."
         )
-
-
-else:
-
-    st.markdown(
-        """
-        <div style="
-            text-align:center;
-            padding:2rem;
-            margin-top:1rem;
-            color:#87948b;
-            background:#f7faf6;
-            border-radius:18px;
-            border:1px solid #e1e9e2;
-        ">
-            🍃 Upload a leaf image to begin
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
 
 # =========================================================
@@ -580,10 +667,9 @@ else:
 st.markdown(
     """
     <div class="footer">
-        🌿 Plant Disease Classifier · TensorFlow / Keras
-        <br>
-        Educational & Demonstration Project
+        🌿 Plant Disease Classifier · TensorFlow / Keras<br>
+        <span>Educational & Demonstration Project</span>
     </div>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
