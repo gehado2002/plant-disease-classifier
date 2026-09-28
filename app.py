@@ -158,8 +158,9 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
 
 /* ---------- IMAGE ---------- */
 [data-testid="stImage"] img {
-    border-radius: 20px; border: 6px solid #FFFFFF;
-    box-shadow: 0 14px 34px rgba(14, 42, 27, 0.16);
+    border-radius: 16px; border: 5px solid #FFFFFF;
+    box-shadow: 0 10px 26px rgba(14, 42, 27, 0.16);
+    max-height: 340px; object-fit: cover;
 }
 [data-testid="stImageCaption"] { text-align: center; color: var(--muted); }
 
@@ -173,7 +174,7 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
 /* ---------- RESULT CARDS ---------- */
 .card {
     background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px;
-    padding: 20px 22px; margin-bottom: 16px; min-height: 128px;
+    padding: 16px 20px; margin-bottom: 12px; min-height: 0;
     box-shadow: 0 6px 18px rgba(23, 35, 28, 0.05); transition: all 0.25s ease;
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(23, 35, 28, 0.10); }
@@ -229,6 +230,7 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
 @media (max-width: 640px) {
     .hero { padding: 32px 18px 30px; border-radius: 18px; }
     .hero-title { font-size: 1.8rem; }
+    [data-testid="stImage"] img { max-width: 260px; margin: 0 auto; display: block; }
 }
 </style>
 """
@@ -420,9 +422,6 @@ if width * height > config.MAX_IMAGE_PIXELS:
     )
     st.stop()
 
-render('<div class="section-title">Uploaded Leaf</div>')
-st.image(image, caption="Uploaded image", use_container_width=True)
-
 # ---------------------------------------------------------------------------
 # Prediction
 # ---------------------------------------------------------------------------
@@ -463,17 +462,13 @@ status_html = f'<span class="pill {status_class}">{health_status}</span>'
 # ---- results ----
 render('<div class="section-title">Prediction Results</div>')
 
-col1, col2 = st.columns(2, gap="medium")
-with col1:
+img_col, info_col = st.columns([1, 1.6], gap="large")
+with img_col:
+    st.image(image, caption="Uploaded leaf", use_container_width=True)
+with info_col:
     render(result_card("🌱", "Plant", plant))
-with col2:
     render(result_card("🦠", "Disease", disease))
-
-col3, col4 = st.columns(2, gap="medium")
-with col3:
     render(result_card("💚", "Health Status", status_html))
-with col4:
-    render(result_card("🎯", "Confidence", f"{confidence_percent:.2f}%"))
 
 render(
     f"""
