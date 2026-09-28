@@ -9,219 +9,347 @@ from src.inference import predict_single_image
 # =========================================================
 
 st.set_page_config(
-    page_title="🌿 Plant Disease Classifier",
+    page_title="Plant Disease Classifier",
     page_icon="🌿",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
 
 # =========================================================
-# Custom CSS
+# Custom Styling
 # =========================================================
 
 st.markdown(
     """
     <style>
 
-    /* ---------- Global ---------- */
+    /* =====================================================
+       Main Background
+       ===================================================== */
+
+    .stApp {
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(151, 190, 155, 0.14),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 90% 15%,
+                rgba(205, 180, 120, 0.10),
+                transparent 25%
+            ),
+            #fbfcf9;
+    }
 
     .block-container {
-        max-width: 1200px;
+        max-width: 1180px;
         padding-top: 2rem;
         padding-bottom: 3rem;
     }
 
-    /* ---------- Sidebar ---------- */
 
-    [data-testid="stSidebar"] {
-        padding-top: 2rem;
+    /* =====================================================
+       Hide Default Streamlit Decoration
+       ===================================================== */
+
+    #MainMenu {
+        visibility: hidden;
     }
 
-    [data-testid="stSidebar"] h1 {
-        font-size: 1.5rem;
+    footer {
+        visibility: hidden;
     }
 
-    /* ---------- Main Header ---------- */
+    header {
+        visibility: hidden;
+    }
+
+
+    /* =====================================================
+       Hero
+       ===================================================== */
 
     .hero {
-        padding: 2.5rem 2rem;
-        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+
+        padding: 3.2rem 2rem;
         margin-bottom: 2rem;
+
+        border-radius: 28px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #e7f2e8 0%,
+                #f5f8f1 52%,
+                #edf4e9 100%
+            );
+
+        border: 1px solid #d7e5d7;
+
+        box-shadow:
+            0 12px 35px rgba(45, 83, 53, 0.08);
+
         text-align: center;
-        background: linear-gradient(
-            135deg,
-            #eaf7ee 0%,
-            #f7fbf8 50%,
-            #e4f4e9 100%
-        );
-        border: 1px solid #d5eadb;
+    }
+
+    .hero::before {
+        content: "🌿";
+        position: absolute;
+        left: 28px;
+        top: 18px;
+        font-size: 3rem;
+        opacity: 0.18;
+        transform: rotate(-18deg);
+    }
+
+    .hero::after {
+        content: "🍃";
+        position: absolute;
+        right: 30px;
+        bottom: 15px;
+        font-size: 3.5rem;
+        opacity: 0.18;
+        transform: rotate(15deg);
     }
 
     .hero-title {
+        color: #234f32;
         font-size: 3rem;
-        font-weight: 700;
-        color: #185c37;
-        margin-bottom: 0.5rem;
+        font-weight: 750;
+        letter-spacing: -1px;
+        margin-bottom: 0.6rem;
     }
 
     .hero-subtitle {
-        font-size: 1.1rem;
-        color: #5f6f64;
-        max-width: 700px;
-        margin: auto;
+        color: #66756a;
+        font-size: 1.05rem;
         line-height: 1.7;
+        max-width: 680px;
+        margin: auto;
     }
 
-    /* ---------- Section Titles ---------- */
 
-    .section-title {
-        font-size: 1.6rem;
-        font-weight: 650;
-        color: #185c37;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+    /* =====================================================
+       Upload Section
+       ===================================================== */
+
+    .upload-title {
+        color: #315c3b;
+        font-size: 1.45rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
     }
-
-    /* ---------- Info Cards ---------- */
-
-    .info-card {
-        padding: 1.4rem;
-        border-radius: 18px;
-        background: #f8fbf9;
-        border: 1px solid #dcebe0;
-        text-align: center;
-        min-height: 125px;
-    }
-
-    .info-icon {
-        font-size: 1.8rem;
-        margin-bottom: 0.4rem;
-    }
-
-    .info-title {
-        font-size: 0.9rem;
-        color: #718078;
-    }
-
-    .info-value {
-        font-size: 1.25rem;
-        font-weight: 650;
-        color: #185c37;
-        margin-top: 0.25rem;
-    }
-
-    /* ---------- Upload Area ---------- */
 
     [data-testid="stFileUploader"] {
-        border-radius: 18px;
+        background: #ffffff;
+        border: 1.5px dashed #a9c5ad;
+        border-radius: 22px;
+        padding: 0.8rem;
+        transition: all 0.25s ease;
     }
 
-    /* ---------- Result Cards ---------- */
+    [data-testid="stFileUploader"]:hover {
+        border-color: #5d8b67;
+        box-shadow: 0 8px 24px rgba(57, 102, 67, 0.08);
+    }
+
+    [data-testid="stFileUploaderDropzone"] {
+        background: #f7faf6;
+        border-radius: 16px;
+    }
+
+
+    /* =====================================================
+       Image Container
+       ===================================================== */
+
+    .image-title {
+        color: #315c3b;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.8rem;
+    }
+
+
+    /* =====================================================
+       Prediction Container
+       ===================================================== */
+
+    .prediction-title {
+        color: #315c3b;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.8rem;
+    }
 
     .result-card {
-        padding: 1.5rem;
+        background: #ffffff;
+
+        border: 1px solid #dce8dd;
         border-radius: 18px;
-        background: white;
-        border: 1px solid #dcebe0;
-        box-shadow: 0 4px 15px rgba(24, 92, 55, 0.06);
-        margin-bottom: 1rem;
+
+        padding: 1.15rem 1.35rem;
+        margin-bottom: 0.85rem;
+
+        box-shadow:
+            0 5px 18px rgba(42, 75, 48, 0.055);
+
+        transition: transform 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .result-card:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 9px 25px rgba(42, 75, 48, 0.09);
     }
 
     .result-label {
-        color: #718078;
-        font-size: 0.9rem;
-        margin-bottom: 0.35rem;
+        color: #829087;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        margin-bottom: 0.3rem;
     }
 
     .result-value {
-        color: #185c37;
-        font-size: 1.35rem;
+        color: #294f34;
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+
+    /* =====================================================
+       Health Status
+       ===================================================== */
+
+    .healthy {
+        background: #edf7ef;
+        border: 1px solid #cce2cf;
+        color: #347247;
+
+        border-radius: 16px;
+
+        padding: 0.95rem 1.2rem;
+        margin-bottom: 0.85rem;
+
+        text-align: center;
+
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .diseased {
+        background: #faf1e9;
+        border: 1px solid #ead7c5;
+        color: #96613e;
+
+        border-radius: 16px;
+
+        padding: 0.95rem 1.2rem;
+        margin-bottom: 0.85rem;
+
+        text-align: center;
+
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       Progress Bar
+       ===================================================== */
+
+    [data-testid="stProgressBar"] {
+        background-color: #e7eee8;
+        border-radius: 20px;
+    }
+
+    [data-testid="stProgressBar"] > div > div {
+        background-color: #6d9b75;
+        border-radius: 20px;
+    }
+
+
+    /* =====================================================
+       Buttons
+       ===================================================== */
+
+    .stButton > button {
+        width: 100%;
+
+        height: 2.8rem;
+
+        border-radius: 13px;
+
+        border: 1px solid #b8cfbb;
+
+        background: #eef5ef;
+
+        color: #315c3b;
+
+        font-size: 0.95rem;
         font-weight: 650;
+
+        transition: all 0.2s ease;
     }
 
-    /* ---------- Health Status ---------- */
+    .stButton > button:hover {
+        border-color: #6f9a77;
 
-    .healthy-status {
-        padding: 1rem 1.2rem;
-        border-radius: 14px;
-        background: #edf8f0;
-        border: 1px solid #cde8d3;
-        color: #237342;
-        font-weight: 600;
-        text-align: center;
+        background: #e1eee3;
+
+        color: #234f32;
+
+        transform: translateY(-1px);
     }
 
-    .diseased-status {
-        padding: 1rem 1.2rem;
-        border-radius: 14px;
-        background: #fff4ed;
-        border: 1px solid #f1d6c2;
-        color: #a0522d;
-        font-weight: 600;
-        text-align: center;
+
+    /* =====================================================
+       Alerts
+       ===================================================== */
+
+    [data-testid="stAlert"] {
+        border-radius: 15px;
     }
 
-    /* ---------- Footer ---------- */
+
+    /* =====================================================
+       Spinner
+       ===================================================== */
+
+    .stSpinner > div {
+        border-top-color: #5f8d68 !important;
+    }
+
+
+    /* =====================================================
+       Footer
+       ===================================================== */
 
     .footer {
-        text-align: center;
-        color: #8a968e;
-        font-size: 0.85rem;
         margin-top: 3rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #e2ebe5;
-    }
+        padding-top: 1.3rem;
 
-    /* ---------- Streamlit Buttons ---------- */
+        text-align: center;
 
-    div.stButton > button {
-        width: 100%;
-        border-radius: 12px;
-        height: 3rem;
-        font-weight: 600;
+        color: #8b978e;
+
+        font-size: 0.78rem;
+
+        border-top: 1px solid #e2e9e2;
     }
 
     </style>
     """,
     unsafe_allow_html=True
 )
-
-
-# =========================================================
-# Sidebar
-# =========================================================
-
-with st.sidebar:
-
-    st.markdown("## 🌿 Plant AI")
-
-    st.markdown(
-        """
-        **Plant Disease Classifier**
-
-        Upload a plant leaf image and let the CNN model analyze it.
-        """
-    )
-
-    st.markdown("---")
-
-    st.markdown("### 📌 Supported")
-
-    st.markdown(
-        """
-        - 🌱 14 plant species
-        - 🦠 38 disease classes
-        - 🖼️ JPG / JPEG / PNG / WEBP
-        - 🧠 CNN — TensorFlow / Keras
-        """
-    )
-
-    st.markdown("---")
-
-    st.caption(
-        "For educational and demonstration purposes."
-    )
 
 
 # =========================================================
@@ -237,8 +365,8 @@ st.markdown(
         </div>
 
         <div class="hero-subtitle">
-            Upload a leaf image to identify the plant species,
-            detect possible diseases, and view the model's confidence.
+            Upload a leaf image and discover the predicted
+            plant disease with the help of deep learning.
         </div>
 
     </div>
@@ -248,339 +376,201 @@ st.markdown(
 
 
 # =========================================================
-# Project Information
+# Upload
 # =========================================================
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown(
-        """
-        <div class="info-card">
-            <div class="info-icon">🌱</div>
-            <div class="info-title">Plant Species</div>
-            <div class="info-value">14</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col2:
-    st.markdown(
-        """
-        <div class="info-card">
-            <div class="info-icon">🦠</div>
-            <div class="info-title">Disease Classes</div>
-            <div class="info-value">38</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col3:
-    st.markdown(
-        """
-        <div class="info-card">
-            <div class="info-icon">🧠</div>
-            <div class="info-title">Model</div>
-            <div class="info-value">CNN</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col4:
-    st.markdown(
-        """
-        <div class="info-card">
-            <div class="info-icon">📊</div>
-            <div class="info-title">Validation Accuracy</div>
-            <div class="info-value">94.44%</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-
-# =========================================================
-# Navigation
-# =========================================================
-
-if "page" not in st.session_state:
-    st.session_state.page = "Prediction"
-
 
 st.markdown(
-    '<div class="section-title">🧭 Navigate</div>',
+    """
+    <div class="upload-title">
+        📤 Upload a Leaf Image
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
-nav1, nav2, nav3 = st.columns(3)
-
-with nav1:
-    if st.button("🔍 Prediction", use_container_width=True):
-        st.session_state.page = "Prediction"
-
-with nav2:
-    if st.button("📖 About Model", use_container_width=True):
-        st.session_state.page = "About"
-
-with nav3:
-    if st.button("⚠️ Limitations", use_container_width=True):
-        st.session_state.page = "Limitations"
-
-
-st.markdown("<br>", unsafe_allow_html=True)
+uploaded_file = st.file_uploader(
+    "Choose an image",
+    type=["jpg", "jpeg", "png", "webp"],
+    help="Supported formats: JPG, JPEG, PNG, WEBP"
+)
 
 
 # =========================================================
-# Prediction Page
+# Prediction
 # =========================================================
 
-if st.session_state.page == "Prediction":
+if uploaded_file is not None:
 
-    st.markdown(
-        '<div class="section-title">📤 Upload Leaf Image</div>',
-        unsafe_allow_html=True
-    )
+    try:
 
-    uploaded_file = st.file_uploader(
-        "Choose a plant leaf image",
-        type=["jpg", "jpeg", "png", "webp"],
-        help="Upload a clear image containing a single plant leaf."
-    )
+        image = Image.open(uploaded_file).convert("RGB")
 
-    if uploaded_file is not None:
-
-        try:
-
-            image = Image.open(uploaded_file).convert("RGB")
-
-            image_col, result_col = st.columns(
-                [1.05, 1],
-                gap="large"
-            )
-
-            # -------------------------------------------------
-            # Image
-            # -------------------------------------------------
-
-            with image_col:
-
-                st.markdown(
-                    '<div class="section-title">🖼️ Uploaded Image</div>',
-                    unsafe_allow_html=True
-                )
-
-                st.image(
-                    image,
-                    width="stretch"
-                )
-
-
-            # -------------------------------------------------
-            # Prediction
-            # -------------------------------------------------
-
-            with result_col:
-
-                st.markdown(
-                    '<div class="section-title">🔎 Prediction</div>',
-                    unsafe_allow_html=True
-                )
-
-                with st.spinner("Analyzing the leaf..."):
-
-                    result = predict_single_image(image)
-
-                # Plant
-                st.markdown(
-                    f"""
-                    <div class="result-card">
-
-                        <div class="result-label">
-                            🌱 Plant
-                        </div>
-
-                        <div class="result-value">
-                            {result.plant}
-                        </div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-                # Disease
-                st.markdown(
-                    f"""
-                    <div class="result-card">
-
-                        <div class="result-label">
-                            🦠 Disease
-                        </div>
-
-                        <div class="result-value">
-                            {result.disease}
-                        </div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-                # Health
-                if result.health_status == "Healthy":
-
-                    st.markdown(
-                        """
-                        <div class="healthy-status">
-                            💚 Healthy Plant
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-
-                else:
-
-                    st.markdown(
-                        """
-                        <div class="diseased-status">
-                            ⚠️ Diseased Plant
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-
-                st.markdown("<br>", unsafe_allow_html=True)
-
-                # Confidence
-                confidence = float(result.confidence)
-
-                st.markdown(
-                    f"""
-                    <div class="result-card">
-
-                        <div class="result-label">
-                            📊 Model Confidence
-                        </div>
-
-                        <div class="result-value">
-                            {confidence:.2%}
-                        </div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-                st.progress(confidence)
-
-                if confidence < 0.70:
-
-                    st.warning(
-                        "The model has low confidence in this prediction. "
-                        "Try uploading a clearer leaf image."
-                    )
-
-        except Exception:
-
-            st.error(
-                "Unable to process the uploaded image. "
-                "Please upload a valid JPG, JPEG, PNG, or WEBP image."
-            )
-
-    else:
-
-        st.info(
-            "👆 Upload a leaf image above to start the prediction."
+        image_col, result_col = st.columns(
+            [1.05, 1],
+            gap="large"
         )
 
 
-# =========================================================
-# About Model Page
-# =========================================================
+        # -----------------------------------------------------
+        # Image
+        # -----------------------------------------------------
 
-elif st.session_state.page == "About":
+        with image_col:
+
+            st.markdown(
+                """
+                <div class="image-title">
+                    🖼️ Your Leaf
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.image(
+                image,
+                width="stretch"
+            )
+
+
+        # -----------------------------------------------------
+        # Results
+        # -----------------------------------------------------
+
+        with result_col:
+
+            st.markdown(
+                """
+                <div class="prediction-title">
+                    🔎 Prediction
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            with st.spinner("Analyzing the leaf..."):
+
+                result = predict_single_image(image)
+
+
+            # Plant
+            st.markdown(
+                f"""
+                <div class="result-card">
+
+                    <div class="result-label">
+                        🌱 Plant
+                    </div>
+
+                    <div class="result-value">
+                        {result.plant}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+            # Disease
+            st.markdown(
+                f"""
+                <div class="result-card">
+
+                    <div class="result-label">
+                        🦠 Disease
+                    </div>
+
+                    <div class="result-value">
+                        {result.disease}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+            # Health Status
+            if result.health_status == "Healthy":
+
+                st.markdown(
+                    """
+                    <div class="healthy">
+                        💚 Healthy
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    """
+                    <div class="diseased">
+                        ⚠️ Diseased
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+            # Confidence
+            confidence = float(result.confidence)
+
+            st.markdown(
+                f"""
+                <div class="result-card">
+
+                    <div class="result-label">
+                        📊 Confidence
+                    </div>
+
+                    <div class="result-value">
+                        {confidence:.2%}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.progress(confidence)
+
+
+            # Low confidence warning
+            if confidence < 0.70:
+
+                st.warning(
+                    "The model has low confidence in this prediction. "
+                    "Try uploading a clear image containing a single leaf."
+                )
+
+
+    except Exception:
+
+        st.error(
+            "Unable to process the uploaded image. "
+            "Please upload a valid JPG, JPEG, PNG, or WEBP image."
+        )
+
+
+else:
 
     st.markdown(
-        '<div class="section-title">🧠 About the Model</div>',
+        """
+        <div style="
+            text-align:center;
+            padding:2rem;
+            margin-top:1rem;
+            color:#87948b;
+            background:#f7faf6;
+            border-radius:18px;
+            border:1px solid #e1e9e2;
+        ">
+            🍃 Upload a leaf image to begin
+        </div>
+        """,
         unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        ### CNN Architecture
-
-        The classifier uses a Convolutional Neural Network built
-        with TensorFlow / Keras.
-
-        ```text
-        Input Image
-             ↓
-        Conv2D + ReLU
-             ↓
-        MaxPooling
-             ↓
-        Conv2D + ReLU
-             ↓
-        MaxPooling
-             ↓
-        Conv2D + ReLU
-             ↓
-        MaxPooling
-             ↓
-        Flatten
-             ↓
-        Dense(128)
-             ↓
-        Dropout(0.5)
-             ↓
-        Dense(38, Softmax)
-        ```
-
-        ### 📊 Performance
-
-        | Metric | Score |
-        |---|---:|
-        | Validation Accuracy | **94.44%** |
-        | Macro F1 | **94.41%** |
-        | Weighted F1 | **94.41%** |
-
-        The model receives **128 × 128 RGB images** and predicts
-        one of the 38 plant/disease classes.
-        """
-    )
-
-
-# =========================================================
-# Limitations Page
-# =========================================================
-
-elif st.session_state.page == "Limitations":
-
-    st.markdown(
-        '<div class="section-title">⚠️ Limitations</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        ### Important Notes
-
-        - 🌱 The model supports **14 plant species** only.
-        - 🦠 It predicts **38 known classes** from the training dataset.
-        - 📷 Real-world images may differ from the training images.
-        - 🔍 Similar diseases may be difficult to distinguish.
-        - 📊 Confidence is not a calibrated probability.
-        - 🚫 The model does not detect unsupported plants or
-          non-plant images.
-        - 👨‍🌾 Predictions should not replace professional
-          agricultural or plant pathology diagnosis.
-        """
     )
 
 
@@ -591,14 +581,9 @@ elif st.session_state.page == "Limitations":
 st.markdown(
     """
     <div class="footer">
-
-        🌿 <b>Plant Disease Classifier</b>
-        · TensorFlow / Keras
-
-        <br><br>
-
+        🌿 Plant Disease Classifier · TensorFlow / Keras
+        <br>
         Educational & Demonstration Project
-
     </div>
     """,
     unsafe_allow_html=True
