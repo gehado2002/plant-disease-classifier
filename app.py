@@ -18,143 +18,185 @@ st.set_page_config(
 
 
 # =========================================================
-# CUSTOM CSS
+# STYLE
 # =========================================================
 
 st.markdown(
     """
     <style>
 
+    /* ==============================
+       GLOBAL
+    ============================== */
+
     .stApp {
-        background:
-            radial-gradient(
-                circle at 10% 10%,
-                rgba(117, 153, 119, 0.13),
-                transparent 30%
-            ),
-            radial-gradient(
-                circle at 90% 90%,
-                rgba(184, 145, 103, 0.10),
-                transparent 30%
-            ),
-            #F5F7F2;
-        color: #20352A;
+        background: #F4F7F2;
     }
 
     .block-container {
         max-width: 900px;
-        padding-top: 2.5rem;
-        padding-bottom: 3rem;
+        padding: 3rem 2rem 2rem;
     }
 
-    #MainMenu,
+    #MainMenu {
+        visibility: hidden;
+    }
+
     footer {
         visibility: hidden;
     }
 
 
-    /* ==================== HERO ==================== */
+    /* ==============================
+       HERO
+    ============================== */
 
     .hero {
         text-align: center;
-        padding: 1rem 1rem 2rem;
+        padding: 10px 0 35px;
     }
 
     .hero-icon {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 1.2rem;
+        width: 68px;
+        height: 68px;
+
+        margin: 0 auto 18px;
+
+        background: #DCE9D8;
+
+        border: 1px solid #C8DAC4;
+        border-radius: 18px;
 
         display: flex;
         align-items: center;
         justify-content: center;
-
-        background: linear-gradient(
-            145deg,
-            #E5F0E0,
-            #D1E2CC
-        );
-
-        border: 1px solid #C5D8BF;
-        border-radius: 20px;
-
-        box-shadow:
-            0 12px 30px rgba(45, 82, 57, 0.10);
     }
 
-    .hero-icon::before {
-        content: "";
-        width: 24px;
-        height: 24px;
+    .leaf {
+        width: 25px;
+        height: 38px;
 
-        border-radius: 50% 0 50% 50%;
+        background: #356B4A;
 
-        background: #315F43;
+        border-radius: 100% 0 100% 0;
 
         transform: rotate(-45deg);
+
+        position: relative;
+    }
+
+    .leaf::after {
+        content: "";
+
+        position: absolute;
+
+        width: 2px;
+        height: 28px;
+
+        background: #B9D0B7;
+
+        left: 12px;
+        top: 5px;
+
+        transform: rotate(45deg);
+
+        border-radius: 5px;
     }
 
     .hero-title {
-        color: #173C2A;
+        color: #183C29;
+
         font-size: 2.7rem;
         font-weight: 800;
-        letter-spacing: -1px;
-        line-height: 1.2;
-        margin-bottom: 0.6rem;
+
+        letter-spacing: -1.2px;
+
+        line-height: 1.15;
+
+        margin-bottom: 12px;
     }
 
     .hero-subtitle {
-        max-width: 620px;
-        margin: 0 auto;
+        color: #718078;
 
-        color: #6D7C72;
         font-size: 1rem;
+
         line-height: 1.7;
+
+        max-width: 600px;
+
+        margin: auto;
     }
 
 
-    /* ==================== UPLOAD ==================== */
+    /* ==============================
+       UPLOAD TITLE
+    ============================== */
 
     .upload-title {
         color: #244B34;
-        font-size: 1.05rem;
+
+        font-size: 1rem;
+
         font-weight: 700;
-        margin: 0 0 0.7rem 0.2rem;
+
+        margin-bottom: 10px;
     }
 
+
+    /* ==============================
+       FILE UPLOADER
+    ============================== */
+
     [data-testid="stFileUploader"] {
-        margin-top: 0.2rem;
+        width: 100%;
     }
 
     [data-testid="stFileUploaderDropzone"] {
-        background: #FBFCF9 !important;
-        border: 2px dashed #A9C0AA !important;
-        border-radius: 22px !important;
-        padding: 1.8rem !important;
-        transition: all 0.25s ease;
+        background: #FFFFFF !important;
+
+        border: 1.5px dashed #A8BDA9 !important;
+
+        border-radius: 18px !important;
+
+        padding: 28px !important;
+
+        min-height: 150px;
+
+        box-shadow:
+            0 8px 25px rgba(36, 75, 52, 0.05);
+
+        transition: 0.25s ease;
     }
 
     [data-testid="stFileUploaderDropzone"]:hover {
-        background: #F7FAF5 !important;
-        border-color: #5F8968 !important;
+        border-color: #4D7858 !important;
+
+        background: #FBFDFB !important;
+
         box-shadow:
-            0 12px 30px rgba(48, 89, 59, 0.08);
+            0 12px 30px rgba(36, 75, 52, 0.09);
     }
 
     [data-testid="stFileUploaderDropzoneInstructions"] {
-        color: #5E6F63 !important;
+        color: #718078 !important;
     }
 
     [data-testid="stFileUploaderDropzoneInstructions"] span {
         color: #315F43 !important;
-        font-weight: 600;
     }
 
     [data-testid="stFileUploaderDropzone"] button {
         background: #315F43 !important;
-        color: white !important;
+
+        color: #FFFFFF !important;
+
         border: none !important;
-        border-radius: 10px !important;
+
+        border-radius: 9px !important;
+
+        padding: 7px 18px !important;
+
         font-weight: 600 !important;
     }
 
@@ -163,59 +205,83 @@ st.markdown(
     }
 
 
-    /* ==================== EMPTY STATE ==================== */
+    /* ==============================
+       EMPTY STATE
+    ============================== */
 
     .empty-state {
-        margin-top: 1rem;
-        padding: 1rem;
         text-align: center;
 
-        background: rgba(255, 255, 255, 0.55);
-        border: 1px solid #DCE5DA;
-        border-radius: 16px;
+        margin-top: 12px;
 
-        color: #718078;
-        font-size: 0.92rem;
+        padding: 13px;
+
+        background: #FFFFFF;
+
+        border: 1px solid #E0E8DF;
+
+        border-radius: 12px;
+
+        color: #89958D;
+
+        font-size: 0.85rem;
     }
 
 
-    /* ==================== SECTION TITLE ==================== */
+    /* ==============================
+       SECTION
+    ============================== */
 
     .section-title {
         color: #244B34;
-        font-size: 1.05rem;
+
+        font-size: 1rem;
+
         font-weight: 700;
-        margin: 1.8rem 0 0.8rem;
+
+        margin-top: 30px;
+
+        margin-bottom: 12px;
     }
 
 
-    /* ==================== IMAGE ==================== */
+    /* ==============================
+       IMAGE CARD
+    ============================== */
 
-    .image-card {
-        background: #FBFCF9;
-        border: 1px solid #DCE5DA;
-        border-radius: 22px;
-        padding: 0.6rem;
+    .image-wrapper {
+        background: #FFFFFF;
+
+        border: 1px solid #DFE7DE;
+
+        border-radius: 18px;
+
+        padding: 8px;
 
         box-shadow:
-            0 12px 30px rgba(35, 66, 44, 0.07);
+            0 8px 25px rgba(36, 75, 52, 0.06);
     }
 
 
-    /* ==================== RESULT CARDS ==================== */
+    /* ==============================
+       RESULT CARDS
+    ============================== */
 
     .result-card {
+        background: #FFFFFF;
+
+        border: 1px solid #DFE7DE;
+
+        border-radius: 17px;
+
+        padding: 22px;
+
         min-height: 145px;
 
-        background: #FBFCF9;
-        border: 1px solid #DCE5DA;
-        border-radius: 20px;
-
-        padding: 1.25rem;
-        margin-bottom: 1rem;
+        margin-bottom: 15px;
 
         box-shadow:
-            0 10px 25px rgba(35, 66, 44, 0.055);
+            0 7px 22px rgba(36, 75, 52, 0.045);
 
         transition:
             transform 0.2s ease,
@@ -226,179 +292,204 @@ st.markdown(
         transform: translateY(-3px);
 
         box-shadow:
-            0 15px 32px rgba(35, 66, 44, 0.09);
-    }
-
-    .result-icon {
-        width: 38px;
-        height: 38px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        margin-bottom: 0.8rem;
-
-        background: #E5EFE2;
-        border-radius: 11px;
-    }
-
-    .result-icon::before {
-        content: "";
-        width: 13px;
-        height: 13px;
-
-        background: #4D7858;
-        border-radius: 50%;
+            0 12px 28px rgba(36, 75, 52, 0.09);
     }
 
     .result-label {
-        color: #78867D;
-        font-size: 0.75rem;
-        font-weight: 600;
+        color: #8A958E;
+
+        font-size: 0.72rem;
+
+        font-weight: 700;
+
+        letter-spacing: 0.9px;
+
         text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-bottom: 0.35rem;
+
+        margin-bottom: 9px;
     }
 
     .result-value {
         color: #203D2C;
-        font-size: 1.12rem;
-        font-weight: 750;
-        line-height: 1.4;
+
+        font-size: 1.08rem;
+
+        font-weight: 700;
+
+        line-height: 1.45;
+
         overflow-wrap: anywhere;
     }
 
 
-    /* ==================== STATUS ==================== */
+    /* ==============================
+       STATUS
+    ============================== */
 
-    .status-healthy {
+    .healthy {
         display: inline-block;
 
-        padding: 0.42rem 0.75rem;
+        background: #E6F1E7;
 
-        background: #E4F1E5;
-        color: #32633E;
+        color: #356542;
 
-        border: 1px solid #C7DEC9;
-        border-radius: 999px;
+        border: 1px solid #C8DEC9;
 
-        font-size: 0.85rem;
+        border-radius: 50px;
+
+        padding: 6px 13px;
+
+        font-size: 0.82rem;
+
         font-weight: 700;
     }
 
-    .status-diseased {
+    .diseased {
         display: inline-block;
 
-        padding: 0.42rem 0.75rem;
+        background: #F5E8E4;
 
-        background: #F6E7E2;
-        color: #98594D;
+        color: #985B4F;
 
-        border: 1px solid #E9CCC4;
-        border-radius: 999px;
+        border: 1px solid #E6CEC7;
 
-        font-size: 0.85rem;
+        border-radius: 50px;
+
+        padding: 6px 13px;
+
+        font-size: 0.82rem;
+
         font-weight: 700;
     }
 
 
-    /* ==================== CONFIDENCE ==================== */
+    /* ==============================
+       CONFIDENCE
+    ============================== */
 
     .confidence-card {
-        background: #FBFCF9;
-        border: 1px solid #DCE5DA;
-        border-radius: 20px;
+        background: #FFFFFF;
 
-        padding: 1.25rem;
-        margin-top: 0.2rem;
+        border: 1px solid #DFE7DE;
+
+        border-radius: 17px;
+
+        padding: 22px;
+
+        margin-top: 2px;
 
         box-shadow:
-            0 10px 25px rgba(35, 66, 44, 0.055);
+            0 7px 22px rgba(36, 75, 52, 0.045);
     }
 
-    .confidence-header {
+    .confidence-top {
         display: flex;
+
         justify-content: space-between;
+
         align-items: center;
-        margin-bottom: 0.7rem;
+
+        margin-bottom: 12px;
     }
 
     .confidence-label {
-        color: #66756B;
-        font-size: 0.85rem;
+        color: #718078;
+
+        font-size: 0.82rem;
+
         font-weight: 600;
     }
 
-    .confidence-value {
+    .confidence-number {
         color: #315F43;
+
         font-size: 1rem;
+
         font-weight: 800;
     }
 
-    .confidence-track {
+    .progress-bg {
         width: 100%;
-        height: 9px;
 
-        background: #E3E9E1;
-        border-radius: 999px;
+        height: 8px;
+
+        background: #E5EBE4;
+
+        border-radius: 20px;
+
         overflow: hidden;
     }
 
-    .confidence-fill {
+    .progress {
         height: 100%;
 
-        background: linear-gradient(
-            90deg,
-            #7A9E7E,
-            #315F43
-        );
+        background: #4F805C;
 
-        border-radius: 999px;
+        border-radius: 20px;
+
+        transition: width 0.5s ease;
     }
 
 
-    /* ==================== FOOTER ==================== */
+    /* ==============================
+       SPINNER
+    ============================== */
+
+    [data-testid="stSpinner"] {
+        color: #315F43 !important;
+    }
+
+
+    /* ==============================
+       ERROR
+    ============================== */
+
+    .stAlert {
+        border-radius: 12px !important;
+    }
+
+
+    /* ==============================
+       FOOTER
+    ============================== */
 
     .footer {
         text-align: center;
 
-        margin-top: 2.8rem;
-        padding-top: 1.3rem;
+        color: #9AA49E;
 
-        border-top: 1px solid #DCE5DA;
+        font-size: 0.72rem;
 
-        color: #819087;
-        font-size: 0.78rem;
-        line-height: 1.8;
-    }
+        margin-top: 40px;
 
-    .footer span {
-        color: #A0AAA3;
+        padding-top: 18px;
+
+        border-top: 1px solid #DEE6DD;
     }
 
 
-    /* ==================== MOBILE ==================== */
+    /* ==============================
+       MOBILE
+    ============================== */
 
     @media (max-width: 640px) {
 
         .block-container {
-            padding-top: 1.5rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding: 2rem 1rem;
         }
 
         .hero-title {
-            font-size: 2.15rem;
+            font-size: 2.1rem;
         }
 
         .hero-subtitle {
             font-size: 0.9rem;
         }
 
-        [data-testid="stFileUploaderDropzone"] {
-            padding: 1.2rem !important;
+        .result-card {
+            min-height: 120px;
         }
+
     }
 
     </style>
@@ -415,7 +506,9 @@ st.markdown(
     """
     <div class="hero">
 
-        <div class="hero-icon"></div>
+        <div class="hero-icon">
+            <div class="leaf"></div>
+        </div>
 
         <div class="hero-title">
             Plant Disease Classifier
@@ -447,7 +540,12 @@ st.markdown(
 
 uploaded_file = st.file_uploader(
     "Upload a leaf image",
-    type=["jpg", "jpeg", "png", "webp"],
+    type=[
+        "jpg",
+        "jpeg",
+        "png",
+        "webp",
+    ],
     label_visibility="collapsed",
 )
 
@@ -478,9 +576,9 @@ if uploaded_file is not None:
 
         image = Image.open(uploaded_file).convert("RGB")
 
-        # -------------------------------
-        # Image
-        # -------------------------------
+        # ---------------------------------------------
+        # IMAGE
+        # ---------------------------------------------
 
         st.markdown(
             """
@@ -492,7 +590,7 @@ if uploaded_file is not None:
         )
 
         st.markdown(
-            '<div class="image-card">',
+            '<div class="image-wrapper">',
             unsafe_allow_html=True,
         )
 
@@ -506,19 +604,38 @@ if uploaded_file is not None:
             unsafe_allow_html=True,
         )
 
-        # -------------------------------
-        # Prediction
-        # -------------------------------
 
-        with st.spinner("Analyzing..."):
+        # ---------------------------------------------
+        # MODEL PREDICTION
+        # ---------------------------------------------
+
+        with st.spinner("Analyzing image..."):
+
             result = predict_single_image(image)
 
-        plant = html.escape(str(result.plant))
-        disease = html.escape(str(result.disease))
-        health_status = html.escape(str(result.health_status))
 
-        confidence = float(result.confidence)
+        # ---------------------------------------------
+        # VALUES
+        # ---------------------------------------------
 
+        plant = html.escape(
+            str(result.plant)
+        )
+
+        disease = html.escape(
+            str(result.disease)
+        )
+
+        health_status = html.escape(
+            str(result.health_status)
+        )
+
+        confidence = float(
+            result.confidence
+        )
+
+
+        # Convert confidence to percentage
         if confidence <= 1:
             confidence_percent = confidence * 100
         else:
@@ -526,36 +643,37 @@ if uploaded_file is not None:
 
         confidence_percent = max(
             0,
-            min(100, confidence_percent)
+            min(
+                100,
+                confidence_percent
+            )
         )
 
-        # -------------------------------
-        # Status
-        # -------------------------------
+
+        # ---------------------------------------------
+        # HEALTH STATUS
+        # ---------------------------------------------
 
         if "healthy" in health_status.lower():
 
-            status_html = (
-                f"""
-                <span class="status-healthy">
-                    {health_status}
-                </span>
-                """
+            status = (
+                f'<span class="healthy">'
+                f'{health_status}'
+                f'</span>'
             )
 
         else:
 
-            status_html = (
-                f"""
-                <span class="status-diseased">
-                    {health_status}
-                </span>
-                """
+            status = (
+                f'<span class="diseased">'
+                f'{health_status}'
+                f'</span>'
             )
 
-        # -------------------------------
-        # Results
-        # -------------------------------
+
+        # ---------------------------------------------
+        # RESULTS TITLE
+        # ---------------------------------------------
 
         st.markdown(
             """
@@ -566,15 +684,21 @@ if uploaded_file is not None:
             unsafe_allow_html=True,
         )
 
-        col1, col2 = st.columns(2, gap="medium")
+
+        # ---------------------------------------------
+        # ROW 1
+        # ---------------------------------------------
+
+        col1, col2 = st.columns(
+            2,
+            gap="medium"
+        )
 
         with col1:
 
             st.markdown(
                 f"""
                 <div class="result-card">
-
-                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Plant
@@ -589,13 +713,12 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
+
         with col2:
 
             st.markdown(
                 f"""
                 <div class="result-card">
-
-                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Disease
@@ -610,7 +733,15 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
-        col3, col4 = st.columns(2, gap="medium")
+
+        # ---------------------------------------------
+        # ROW 2
+        # ---------------------------------------------
+
+        col3, col4 = st.columns(
+            2,
+            gap="medium"
+        )
 
         with col3:
 
@@ -618,14 +749,12 @@ if uploaded_file is not None:
                 f"""
                 <div class="result-card">
 
-                    <div class="result-icon"></div>
-
                     <div class="result-label">
                         Health Status
                     </div>
 
                     <div class="result-value">
-                        {status_html}
+                        {status}
                     </div>
 
                 </div>
@@ -633,13 +762,12 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
+
         with col4:
 
             st.markdown(
                 f"""
                 <div class="result-card">
-
-                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Confidence
@@ -654,31 +782,32 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
-        # -------------------------------
-        # Confidence Bar
-        # -------------------------------
+
+        # ---------------------------------------------
+        # CONFIDENCE BAR
+        # ---------------------------------------------
 
         st.markdown(
             f"""
             <div class="confidence-card">
 
-                <div class="confidence-header">
+                <div class="confidence-top">
 
                     <div class="confidence-label">
                         Prediction Confidence
                     </div>
 
-                    <div class="confidence-value">
+                    <div class="confidence-number">
                         {confidence_percent:.2f}%
                     </div>
 
                 </div>
 
-                <div class="confidence-track">
+                <div class="progress-bg">
 
                     <div
-                        class="confidence-fill"
-                        style="width: {confidence_percent:.2f}%;">
+                        class="progress"
+                        style="width:{confidence_percent:.2f}%;">
                     </div>
 
                 </div>
@@ -688,11 +817,11 @@ if uploaded_file is not None:
             unsafe_allow_html=True,
         )
 
-    except Exception:
+
+    except Exception as error:
 
         st.error(
-            "Unable to analyze this image. "
-            "Please upload a valid plant leaf image."
+            "Unable to analyze the uploaded image."
         )
 
 
@@ -703,8 +832,7 @@ if uploaded_file is not None:
 st.markdown(
     """
     <div class="footer">
-        Plant Disease Classifier · TensorFlow / Keras<br>
-        <span>Educational & Demonstration Project</span>
+        Plant Disease Classifier · TensorFlow / Keras
     </div>
     """,
     unsafe_allow_html=True,
