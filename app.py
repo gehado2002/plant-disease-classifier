@@ -304,7 +304,7 @@ footer {
     box-shadow: 0 4px 14px rgba(23, 35, 28, 0.04);
 }
 
-/* About this prediction title */
+/* Expander title */
 [data-testid="stExpander"] summary {
     color: #17231C !important;
     font-weight: 700 !important;
@@ -314,7 +314,7 @@ footer {
     color: #17231C !important;
 }
 
-/* About this prediction content */
+/* Expander content */
 [data-testid="stExpander"] [data-testid="stMarkdownContainer"] {
     color: #17231C !important;
 }
@@ -323,16 +323,12 @@ footer {
     color: #4F5F56 !important;
     font-size: 0.92rem !important;
     line-height: 1.7 !important;
-}
-
-[data-testid="stExpander"] [data-testid="stMarkdownContainer"] li {
-    color: #4F5F56 !important;
-    font-size: 0.92rem !important;
-    line-height: 1.7 !important;
+    margin-bottom: 14px !important;
 }
 
 [data-testid="stExpander"] [data-testid="stMarkdownContainer"] strong {
     color: #1F5B3A !important;
+    font-weight: 750 !important;
 }
 
 
@@ -502,9 +498,8 @@ footer {
 }
 
 
-/* ---------- MOBILE ---------- */
-
 @media (max-width: 640px) {
+
     .hero {
         padding: 32px 18px 30px;
         border-radius: 18px;
@@ -565,12 +560,11 @@ M0,26 L-22,12
 """
 
 LEAF_SVG = f"""
-<svg viewBox="0 0 600 196"
-     xmlns="http://www.w3.org/2000/svg"
-     role="img"
+<svg viewBox="0 0 600 196" xmlns="http://www.w3.org/2000/svg" role="img"
      aria-label="Healthy leaf, leaf spot disease and blight">
 
   <defs>
+
     <linearGradient id="gH" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#8BE0A8"/>
       <stop offset="1" stop-color="#2E8B57"/>
@@ -585,10 +579,12 @@ LEAF_SVG = f"""
       <stop offset="0" stop-color="#B7C25A"/>
       <stop offset="1" stop-color="#8A6A2F"/>
     </linearGradient>
+
   </defs>
 
 
   <g transform="translate(110,88) rotate(-12) scale(1.15)">
+
     <path d="{LEAF}" fill="url(#gH)"/>
 
     <path
@@ -606,7 +602,9 @@ LEAF_SVG = f"""
         stroke-width="1.6"
         fill="none"
     />
+
   </g>
+
 
   <text
       x="110"
@@ -622,6 +620,7 @@ LEAF_SVG = f"""
 
 
   <g transform="translate(300,88) rotate(6) scale(1.15)">
+
     <path d="{LEAF}" fill="url(#gS)"/>
 
     <path
@@ -655,7 +654,9 @@ LEAF_SVG = f"""
       <circle cx="-2" cy="-44" r="3"/>
       <circle cx="-20" cy="2" r="3.5"/>
     </g>
+
   </g>
+
 
   <text
       x="300"
@@ -671,6 +672,7 @@ LEAF_SVG = f"""
 
 
   <g transform="translate(490,88) rotate(-4) scale(1.15)">
+
     <path d="{LEAF}" fill="url(#gB)"/>
 
     <path
@@ -706,7 +708,9 @@ LEAF_SVG = f"""
         fill="#5A3A1E"
         fill-opacity=".8"
     />
+
   </g>
+
 
   <text
       x="490"
@@ -736,9 +740,11 @@ def hero_art_html() -> str:
         "hero.png",
         "hero.webp",
     ):
+
         path = assets / name
 
         if path.exists():
+
             ext = path.suffix.lstrip(".").lower()
 
             mime = (
@@ -789,9 +795,11 @@ render(
 # error if the artifacts are missing or inconsistent.
 # ---------------------------------------------------------------------------
 try:
+
     model, class_mapping = get_model_and_classes()
 
 except ArtifactError as exc:
+
     st.error(
         "⚠️ The application could not start because of a model/artifact "
         f"problem:\n\n**{exc}**\n\nThis is a configuration issue, not "
@@ -813,10 +821,7 @@ uploaded_file = st.file_uploader(
     type=config.ALLOWED_EXTENSIONS,
     accept_multiple_files=False,
     label_visibility="collapsed",
-    help=(
-        f"Supported formats: "
-        f"{', '.join(config.ALLOWED_EXTENSIONS).upper()}"
-    ),
+    help=f"Supported formats: {', '.join(config.ALLOWED_EXTENSIONS).upper()}",
 )
 
 
@@ -992,7 +997,6 @@ img_col, info_col = st.columns(
     gap="large"
 )
 
-
 with img_col:
 
     st.image(
@@ -1000,7 +1004,6 @@ with img_col:
         caption="Uploaded leaf",
         use_container_width=True
     )
-
 
 with info_col:
 
@@ -1100,32 +1103,18 @@ with st.expander("About this prediction"):
 
     st.markdown(
         """
-        **Confidence**
+        - **Confidence:** Confidence is the model's raw softmax output for
+          the predicted class. It reflects the model's *relative* certainty
+          among the 38 classes it knows, not a calibrated probability of
+          being correct.
 
-        The confidence shown is the model's raw softmax output for the
-        predicted class. It is **not a calibrated probability** that the
-        prediction is correct.
+        - **Supported classes:** This model was trained on a fixed set of
+          plant species and diseases from the New Plant Diseases Dataset.
+          Plants or conditions outside that set will still receive a
+          prediction from the closest matching class, which may be
+          misleading.
 
-        **Supported classes**
-
-        The model was trained on **14 plant species and 38 classes**.
-        Images outside these classes may still receive a prediction.
-
-        **Out-of-distribution images**
-
-        This version does not include explicit **out-of-distribution (OOD)
-        detection**, so unfamiliar images may be classified as one of the
-        known classes.
-
-        **Real-world images**
-
-        Performance may be lower on real-world photos with different lighting,
-        backgrounds, angles, or image quality.
-
-        **Important**
-
-        This tool is intended as an AI-based classification aid and is
-        **not a substitute for professional agricultural or plant-pathology
-        advice**.
+        - **Important:** This tool is not a substitute for professional
+          agricultural or plant-pathology advice.
         """
     )
