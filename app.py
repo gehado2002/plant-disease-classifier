@@ -1,175 +1,255 @@
-"""
-Plant Disease Classifier — Streamlit application.
-
-Run with:
-    streamlit run app.py
-"""
-
 import streamlit as st
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 
-from src import config
-from src.inference import (
-    ArtifactError,
-    InvalidImageError,
-    PredictionError,
-    is_low_confidence,
-    load_class_mapping,
-    load_keras_model,
-    predict_single_image,
-    validate_artifacts,
-)
+from src.inference import predict_single_image
+
+
+# --------------------------------------------------
+# Page Configuration
+# --------------------------------------------------
 
 st.set_page_config(
     page_title="Plant Disease Classifier",
     page_icon="🌿",
-    layout="centered",
+    layout="centered"
 )
 
 
-# ---------------------------------------------------------------------------
-# Cached resource loading — model & class mapping are loaded once per
-# session/process, not on every prediction or rerun.
-# ---------------------------------------------------------------------------
-@st.cache_resource(show_spinner="Loading model...")
-def get_model_and_classes():
-    class_mapping = load_class_mapping()
-    model = load_keras_model()
-    validate_artifacts(model, class_mapping)
-    return model, class_mapping
+# --------------------------------------------------
+# Custom CSS
+# --------------------------------------------------
+
+st.markdown("""
+<style>
+
+    /* Main container */
+    .block-container {
+        max-width: 900px;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Title */
+    .main-title {
+        text-align: center;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Upload section */
+    .upload-box {
+        padding: 1rem;
+        border-radius: 16px;
+        background: #f8faf8;
+        border: 1px solid #dce8df;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Prediction cards */
+    .prediction-card {
+        padding: 1.2rem;
+        border-radius: 16px;
+        background: #f8faf8;
+        border: 1px solid #dce8df;
+        text-align: center;
+        height: 100%;
+    }
+
+    .card-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 0.4rem;
+    }
+
+    .card-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    /* Confidence */
+    .confidence {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border-radius: 16px;
+        background: #f8faf8;
+        border: 1px solid #dce8df;
+        text-align: center;
+    }
+
+    .confidence-value {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-top: 3rem;
+    }
+
+</style>
+""", unsafe_allow_html=True)
 
 
-# ---------------------------------------------------------------------------
-# UI
-# ---------------------------------------------------------------------------
-st.title("🌿 Plant Disease Classifier")
-st.write(
-    "Upload a photo of a plant leaf and this app will predict the plant "
-    "species and, if present, the disease affecting it, using a "
-    "convolutional neural network trained on the New Plant Diseases "
-    "Dataset."
+# --------------------------------------------------
+# Header
+# --------------------------------------------------
+
+st.markdown(
+    '<div class="main-title">🌿 Plant Disease Classifier</div>',
+    unsafe_allow_html=True
 )
 
-# Load model/class mapping once, up front, with a clear developer-facing
-# error if the artifacts are missing or inconsistent (Phase 8).
-try:
-    model, class_mapping = get_model_and_classes()
-except ArtifactError as exc:
-    st.error(
-        "⚠️ The application could not start because of a model/artifact "
-        f"problem:\n\n**{exc}**\n\nThis is a configuration issue, not "
-        "something you can fix by trying a different image."
-    )
-    st.stop()
+st.markdown(
+    '<div class="subtitle">'
+    'Upload a leaf image to identify the plant and detect possible diseases.'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-st.divider()
+
+# --------------------------------------------------
+# Upload
+# --------------------------------------------------
+
+st.markdown('<div class="upload-box">', unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader(
-    "Upload a leaf image",
-    type=config.ALLOWED_EXTENSIONS,
-    accept_multiple_files=False,
-    help=f"Supported formats: {', '.join(config.ALLOWED_EXTENSIONS).upper()}",
+    "Upload a plant leaf image",
+    type=["jpg", "jpeg", "png", "webp"],
+    help="Supported formats: JPG, JPEG, PNG, WEBP"
 )
 
-if uploaded_file is None:
-    st.info("👆 Upload an image to get a prediction.")
-    st.stop()
+st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Guard: file size -------------------------------------------------
-size_mb = uploaded_file.size / (1024 * 1024)
-if size_mb > config.MAX_UPLOAD_MB:
-    st.error(
-        f"This file is {size_mb:.1f} MB, which exceeds the "
-        f"{config.MAX_UPLOAD_MB} MB limit. Please upload a smaller image."
-    )
-    st.stop()
 
-# --- Guard: open & decode the image safely -----------------------------
-try:
-    image = Image.open(uploaded_file)
-    image.verify()  # cheap integrity check
-    # verify() invalidates the file handle for further reads, so reopen it
-    uploaded_file.seek(0)
-    image = Image.open(uploaded_file)
-    image.load()
-except UnidentifiedImageError:
-    st.error(
-        "This file doesn't look like a valid image. Please upload a "
-        "JPG, JPEG, PNG, or WEBP file."
-    )
-    st.stop()
-except Exception:
-    st.error(
-        "This image appears to be corrupted or unreadable. Please try "
-        "a different file."
-    )
-    st.stop()
+# --------------------------------------------------
+# Prediction
+# --------------------------------------------------
 
-# --- Guard: unreasonably large pixel dimensions ------------------------
-width, height = image.size
-if width * height > config.MAX_IMAGE_PIXELS:
-    st.error(
-        f"This image is {width}x{height} pixels, which is too large to "
-        "process safely. Please upload a smaller image."
-    )
-    st.stop()
+if uploaded_file is not None:
 
-st.image(image, caption="Uploaded image", use_container_width=True)
-
-# --- Prediction ----------------------------------------------------------
-with st.spinner("Analyzing image..."):
     try:
-        result = predict_single_image(image, model, class_mapping)
-    except InvalidImageError:
-        st.error(
-            "This image's format or color mode couldn't be processed. "
-            "Please try a different image (standard JPG or PNG works best)."
+        image = Image.open(uploaded_file)
+
+        # Display image
+        st.image(
+            image,
+            caption="Uploaded Leaf Image",
+            width="stretch"
         )
-        st.stop()
-    except PredictionError:
-        st.error(
-            "The model failed to analyze this image. Please try again, "
-            "or try a different image."
+
+        # Predict
+        with st.spinner("Analyzing the leaf..."):
+            result = predict_single_image(image)
+
+        st.markdown("### 🔍 Prediction")
+
+        # Prediction cards
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown(
+                f"""
+                <div class="prediction-card">
+                    <div class="card-label">🌱 Plant</div>
+                    <div class="card-value">{result.plant}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with col2:
+            st.markdown(
+                f"""
+                <div class="prediction-card">
+                    <div class="card-label">🦠 Disease</div>
+                    <div class="card-value">{result.disease}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            status_icon = "💚" if result.health_status == "Healthy" else "⚠️"
+
+            st.markdown(
+                f"""
+                <div class="prediction-card">
+                    <div class="card-label">Health Status</div>
+                    <div class="card-value">
+                        {status_icon} {result.health_status}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with col4:
+            st.markdown(
+                f"""
+                <div class="prediction-card">
+                    <div class="card-label">Confidence</div>
+                    <div class="card-value">
+                        {result.confidence:.2%}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        # Confidence progress
+        st.markdown(
+            f"""
+            <div class="confidence">
+                <div class="card-label">Prediction Confidence</div>
+                <div class="confidence-value">
+                    {result.confidence:.2%}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-        st.stop()
-    except ArtifactError as exc:
-        st.error(f"⚠️ Internal configuration error: {exc}")
-        st.stop()
 
-st.divider()
-st.subheader("Prediction")
+        st.progress(float(result.confidence))
 
-col1, col2 = st.columns(2)
-with col1:
-    st.metric("Plant", result.plant)
-    st.metric("Health Status", result.health_status)
-with col2:
-    st.metric("Disease", result.disease)
-    st.metric("Confidence", f"{result.confidence:.2%}")
+        # Low confidence warning
+        if result.confidence < 0.70:
+            st.warning(
+                "The model is not highly confident in this prediction. "
+                "Try uploading a clearer image of a single leaf."
+            )
 
-if is_low_confidence(result.confidence):
-    st.warning(
-        "⚠️ Low-confidence prediction — the model isn't very sure about "
-        "this one. Consider uploading a clearer, well-lit, close-up photo "
-        "of a single leaf."
-    )
+    except Exception:
+        st.error(
+            "Unable to process this image. "
+            "Please upload a valid plant leaf image."
+        )
 
-with st.expander("About this prediction"):
-    st.write(
-        "- Confidence is the model's raw softmax output for the predicted "
-        "class. It reflects the model's *relative* certainty among the "
-        "38 classes it knows, not a calibrated probability of being correct.\n"
-        "- This model was trained on a fixed set of plant species and "
-        "diseases from the New Plant Diseases Dataset. Plants or "
-        "conditions outside that set will still receive a prediction from "
-        "the closest matching class, which may be misleading.\n"
-        "- This tool is not a substitute for professional agricultural or "
-        "plant-pathology advice."
-    )
 
-st.divider()
-st.caption(
-    "Model validation performance (on the project's held-out validation "
-    "set): Accuracy 94.44% · Macro F1 94.41% · Weighted F1 94.41%. "
-    "Real-world accuracy may differ."
+# --------------------------------------------------
+# Footer
+# --------------------------------------------------
+
+st.markdown(
+    """
+    <div class="footer">
+        🌿 Plant Disease Classifier · CNN · TensorFlow / Keras
+        <br>
+        For educational and demonstration purposes.
+    </div>
+    """,
+    unsafe_allow_html=True
 )
