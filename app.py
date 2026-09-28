@@ -25,8 +25,6 @@ st.markdown(
     """
     <style>
 
-    /* ==================== APP ==================== */
-
     .stApp {
         background:
             radial-gradient(
@@ -40,6 +38,7 @@ st.markdown(
                 transparent 30%
             ),
             #F5F7F2;
+        color: #20352A;
     }
 
     .block-container {
@@ -48,13 +47,7 @@ st.markdown(
         padding-bottom: 3rem;
     }
 
-
-    /* ==================== HIDE DEFAULT UI ==================== */
-
-    #MainMenu {
-        visibility: hidden;
-    }
-
+    #MainMenu,
     footer {
         visibility: hidden;
     }
@@ -68,10 +61,9 @@ st.markdown(
     }
 
     .hero-icon {
-        width: 74px;
-        height: 74px;
-
-        margin: 0 auto 1rem;
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1.2rem;
 
         display: flex;
         align-items: center;
@@ -84,33 +76,38 @@ st.markdown(
         );
 
         border: 1px solid #C5D8BF;
-        border-radius: 22px;
-
-        font-size: 2rem;
+        border-radius: 20px;
 
         box-shadow:
             0 12px 30px rgba(45, 82, 57, 0.10);
     }
 
+    .hero-icon::before {
+        content: "";
+        width: 24px;
+        height: 24px;
+
+        border-radius: 50% 0 50% 50%;
+
+        background: #315F43;
+
+        transform: rotate(-45deg);
+    }
+
     .hero-title {
         color: #173C2A;
-
         font-size: 2.7rem;
         font-weight: 800;
-
         letter-spacing: -1px;
         line-height: 1.2;
-
         margin-bottom: 0.6rem;
     }
 
     .hero-subtitle {
         max-width: 620px;
-
         margin: 0 auto;
 
         color: #6D7C72;
-
         font-size: 1rem;
         line-height: 1.7;
     }
@@ -120,10 +117,8 @@ st.markdown(
 
     .upload-title {
         color: #244B34;
-
         font-size: 1.05rem;
         font-weight: 700;
-
         margin: 0 0 0.7rem 0.2rem;
     }
 
@@ -133,21 +128,15 @@ st.markdown(
 
     [data-testid="stFileUploaderDropzone"] {
         background: #FBFCF9 !important;
-
         border: 2px dashed #A9C0AA !important;
-
         border-radius: 22px !important;
-
         padding: 1.8rem !important;
-
         transition: all 0.25s ease;
     }
 
     [data-testid="stFileUploaderDropzone"]:hover {
         background: #F7FAF5 !important;
-
         border-color: #5F8968 !important;
-
         box-shadow:
             0 12px 30px rgba(48, 89, 59, 0.08);
     }
@@ -163,12 +152,9 @@ st.markdown(
 
     [data-testid="stFileUploaderDropzone"] button {
         background: #315F43 !important;
-
         color: white !important;
-
         border: none !important;
         border-radius: 10px !important;
-
         font-weight: 600 !important;
     }
 
@@ -181,19 +167,14 @@ st.markdown(
 
     .empty-state {
         margin-top: 1rem;
-
         padding: 1rem;
-
         text-align: center;
 
         background: rgba(255, 255, 255, 0.55);
-
         border: 1px solid #DCE5DA;
-
         border-radius: 16px;
 
         color: #718078;
-
         font-size: 0.92rem;
     }
 
@@ -202,10 +183,8 @@ st.markdown(
 
     .section-title {
         color: #244B34;
-
         font-size: 1.05rem;
         font-weight: 700;
-
         margin: 1.8rem 0 0.8rem;
     }
 
@@ -214,11 +193,8 @@ st.markdown(
 
     .image-card {
         background: #FBFCF9;
-
         border: 1px solid #DCE5DA;
-
         border-radius: 22px;
-
         padding: 0.6rem;
 
         box-shadow:
@@ -232,13 +208,10 @@ st.markdown(
         min-height: 145px;
 
         background: #FBFCF9;
-
         border: 1px solid #DCE5DA;
-
         border-radius: 20px;
 
         padding: 1.25rem;
-
         margin-bottom: 1rem;
 
         box-shadow:
@@ -257,32 +230,42 @@ st.markdown(
     }
 
     .result-icon {
-        font-size: 1.45rem;
+        width: 38px;
+        height: 38px;
 
-        margin-bottom: 0.65rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 0.8rem;
+
+        background: #E5EFE2;
+        border-radius: 11px;
+    }
+
+    .result-icon::before {
+        content: "";
+        width: 13px;
+        height: 13px;
+
+        background: #4D7858;
+        border-radius: 50%;
     }
 
     .result-label {
         color: #78867D;
-
         font-size: 0.75rem;
         font-weight: 600;
-
         text-transform: uppercase;
-
         letter-spacing: 0.8px;
-
         margin-bottom: 0.35rem;
     }
 
     .result-value {
         color: #203D2C;
-
         font-size: 1.12rem;
         font-weight: 750;
-
         line-height: 1.4;
-
         overflow-wrap: anywhere;
     }
 
@@ -295,11 +278,9 @@ st.markdown(
         padding: 0.42rem 0.75rem;
 
         background: #E4F1E5;
-
         color: #32633E;
 
         border: 1px solid #C7DEC9;
-
         border-radius: 999px;
 
         font-size: 0.85rem;
@@ -312,11 +293,9 @@ st.markdown(
         padding: 0.42rem 0.75rem;
 
         background: #F6E7E2;
-
         color: #98594D;
 
         border: 1px solid #E9CCC4;
-
         border-radius: 999px;
 
         font-size: 0.85rem;
@@ -328,13 +307,10 @@ st.markdown(
 
     .confidence-card {
         background: #FBFCF9;
-
         border: 1px solid #DCE5DA;
-
         border-radius: 20px;
 
         padding: 1.25rem;
-
         margin-top: 0.2rem;
 
         box-shadow:
@@ -343,36 +319,29 @@ st.markdown(
 
     .confidence-header {
         display: flex;
-
         justify-content: space-between;
         align-items: center;
-
         margin-bottom: 0.7rem;
     }
 
     .confidence-label {
         color: #66756B;
-
         font-size: 0.85rem;
         font-weight: 600;
     }
 
     .confidence-value {
         color: #315F43;
-
         font-size: 1rem;
         font-weight: 800;
     }
 
     .confidence-track {
         width: 100%;
-
         height: 9px;
 
         background: #E3E9E1;
-
         border-radius: 999px;
-
         overflow: hidden;
     }
 
@@ -400,9 +369,7 @@ st.markdown(
         border-top: 1px solid #DCE5DA;
 
         color: #819087;
-
         font-size: 0.78rem;
-
         line-height: 1.8;
     }
 
@@ -432,7 +399,6 @@ st.markdown(
         [data-testid="stFileUploaderDropzone"] {
             padding: 1.2rem !important;
         }
-
     }
 
     </style>
@@ -449,9 +415,7 @@ st.markdown(
     """
     <div class="hero">
 
-        <div class="hero-icon">
-            🌿
-        </div>
+        <div class="hero-icon"></div>
 
         <div class="hero-title">
             Plant Disease Classifier
@@ -475,7 +439,7 @@ st.markdown(
 st.markdown(
     """
     <div class="upload-title">
-        📤 Upload a Leaf Image
+        Upload a Leaf Image
     </div>
     """,
     unsafe_allow_html=True,
@@ -497,7 +461,7 @@ if uploaded_file is None:
     st.markdown(
         """
         <div class="empty-state">
-            🍃 Upload a leaf image to begin
+            Upload a leaf image to begin
         </div>
         """,
         unsafe_allow_html=True,
@@ -505,24 +469,23 @@ if uploaded_file is None:
 
 
 # =========================================================
-# IMAGE + PREDICTION
+# PREDICTION
 # =========================================================
 
 if uploaded_file is not None:
 
     try:
 
-        # Load image
         image = Image.open(uploaded_file).convert("RGB")
 
-        # -----------------------------------------------
-        # Uploaded image
-        # -----------------------------------------------
+        # -------------------------------
+        # Image
+        # -------------------------------
 
         st.markdown(
             """
             <div class="section-title">
-                🖼️ Uploaded Leaf
+                Uploaded Leaf
             </div>
             """,
             unsafe_allow_html=True,
@@ -543,16 +506,12 @@ if uploaded_file is not None:
             unsafe_allow_html=True,
         )
 
-        # -----------------------------------------------
+        # -------------------------------
         # Prediction
-        # -----------------------------------------------
+        # -------------------------------
 
         with st.spinner("Analyzing..."):
             result = predict_single_image(image)
-
-        # -----------------------------------------------
-        # Safe values
-        # -----------------------------------------------
 
         plant = html.escape(str(result.plant))
         disease = html.escape(str(result.disease))
@@ -570,16 +529,16 @@ if uploaded_file is not None:
             min(100, confidence_percent)
         )
 
-        # -----------------------------------------------
-        # Health status style
-        # -----------------------------------------------
+        # -------------------------------
+        # Status
+        # -------------------------------
 
         if "healthy" in health_status.lower():
 
             status_html = (
                 f"""
                 <span class="status-healthy">
-                    🌱 {health_status}
+                    {health_status}
                 </span>
                 """
             )
@@ -589,25 +548,24 @@ if uploaded_file is not None:
             status_html = (
                 f"""
                 <span class="status-diseased">
-                    ⚠️ {health_status}
+                    {health_status}
                 </span>
                 """
             )
 
-        # -----------------------------------------------
+        # -------------------------------
         # Results
-        # -----------------------------------------------
+        # -------------------------------
 
         st.markdown(
             """
             <div class="section-title">
-                🔍 Prediction Results
+                Prediction Results
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # First row
         col1, col2 = st.columns(2, gap="medium")
 
         with col1:
@@ -616,9 +574,7 @@ if uploaded_file is not None:
                 f"""
                 <div class="result-card">
 
-                    <div class="result-icon">
-                        🌱
-                    </div>
+                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Plant
@@ -639,9 +595,7 @@ if uploaded_file is not None:
                 f"""
                 <div class="result-card">
 
-                    <div class="result-icon">
-                        🦠
-                    </div>
+                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Disease
@@ -656,7 +610,6 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
-        # Second row
         col3, col4 = st.columns(2, gap="medium")
 
         with col3:
@@ -665,9 +618,7 @@ if uploaded_file is not None:
                 f"""
                 <div class="result-card">
 
-                    <div class="result-icon">
-                        💚
-                    </div>
+                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Health Status
@@ -688,9 +639,7 @@ if uploaded_file is not None:
                 f"""
                 <div class="result-card">
 
-                    <div class="result-icon">
-                        ✨
-                    </div>
+                    <div class="result-icon"></div>
 
                     <div class="result-label">
                         Confidence
@@ -705,9 +654,9 @@ if uploaded_file is not None:
                 unsafe_allow_html=True,
             )
 
-        # -----------------------------------------------
-        # Confidence bar
-        # -----------------------------------------------
+        # -------------------------------
+        # Confidence Bar
+        # -------------------------------
 
         st.markdown(
             f"""
@@ -754,7 +703,7 @@ if uploaded_file is not None:
 st.markdown(
     """
     <div class="footer">
-        🌿 Plant Disease Classifier · TensorFlow / Keras<br>
+        Plant Disease Classifier · TensorFlow / Keras<br>
         <span>Educational & Demonstration Project</span>
     </div>
     """,
