@@ -1,5 +1,9 @@
 # 🌿 Plant Disease Classifier
 
+<p align="center">
+  <img src="https://i.ytimg.com/vi/iXpBFxEZktU/maxresdefault.jpg" alt="Plant Disease Classifier" width="100%">
+</p>
+
 ## 1. Project Overview
 
 A Streamlit application that predicts a plant's **species, health status, and disease** from a single uploaded leaf image.
