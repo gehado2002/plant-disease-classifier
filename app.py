@@ -10,7 +10,6 @@ from src.inference import predict_single_image
 
 st.set_page_config(
     page_title="Plant Disease Classifier",
-    page_icon="🌿",
     layout="wide"
 )
 
