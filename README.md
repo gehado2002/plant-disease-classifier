@@ -123,16 +123,9 @@ http://localhost:8501
 
 ## 7. How to Use
 
-1. Open the application.
-2. Upload a leaf image.
-3. The image will be displayed for confirmation.
-4. The app predicts:
+Upload a leaf image through the Streamlit interface. 
 
-   * **Plant**
-   * **Disease**
-   * **Health Status**
-   * **Confidence**
-5. If confidence is low, try uploading a clearer image.
+The application displays the **Plant**, **Disease**, **Health Status**, and **Confidence** of the prediction.
 
 ---
 
