@@ -16,7 +16,7 @@ The app uses a pre-trained CNN model and provides predictions through a simple w
 
 ## 2. Model
 
-The model was trained on the **New Plant Diseases Dataset**, an augmented version of the PlantVillage dataset.
+The model was trained on the **New Plant Diseases Dataset**.
 
 * 🌱 **14 plant species**
 * 🦠 **38 plant/disease classes**
