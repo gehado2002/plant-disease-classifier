@@ -497,19 +497,6 @@ if low_conf:
         "of a single leaf."
     )
 
-with st.expander("About this prediction"):
-    st.write(
-        "- Confidence is the model's raw softmax output for the predicted "
-        "class. It reflects the model's *relative* certainty among the "
-        "38 classes it knows, not a calibrated probability of being correct.\n"
-        "- This model was trained on a fixed set of plant species and "
-        "diseases from the New Plant Diseases Dataset. Plants or "
-        "conditions outside that set will still receive a prediction from "
-        "the closest matching class, which may be misleading.\n"
-        "- This tool is not a substitute for professional agricultural or "
-        "plant-pathology advice."
-    )
-
 # ---------------------------------------------------------------------------
 # Footer
 # ---------------------------------------------------------------------------
@@ -522,3 +509,19 @@ render(
     </div>
     """
 )
+
+# ---------------------------------------------------------------------------
+# About (dropdown at the very end)
+# ---------------------------------------------------------------------------
+with st.expander("About this prediction"):
+    st.write(
+        "- Confidence is the model's raw softmax output for the predicted "
+        "class. It reflects the model's *relative* certainty among the "
+        "38 classes it knows, not a calibrated probability of being correct.\n"
+        "- This model was trained on a fixed set of plant species and "
+        "diseases from the New Plant Diseases Dataset. Plants or "
+        "conditions outside that set will still receive a prediction from "
+        "the closest matching class, which may be misleading.\n"
+        "- This tool is not a substitute for professional agricultural or "
+        "plant-pathology advice."
+    )
