@@ -8,7 +8,7 @@
 
 A Streamlit application that predicts a plant's **species, health status, and disease** from a single uploaded leaf image.
 
-The app uses a pre-trained CNN model and provides predictions through a simple web interface.
+The app uses a trained CNN model to provide predictions through a simple web interface.
 
 > **Note:** This repository serves the trained model; it does not retrain or modify it.
 
@@ -121,11 +121,9 @@ http://localhost:8501
 
 ---
 
-## 7. How to Use
+## 7. Usage
 
-Upload a leaf image through the Streamlit interface. 
-
-The application displays the **Plant**, **Disease**, **Health Status**, and **Confidence** of the prediction.
+Upload a leaf image through the Streamlit interface to get the predicted **Plant**, **Disease**, **Health Status**, and **Confidence**.
 
 ---
 
