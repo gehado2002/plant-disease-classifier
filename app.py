@@ -5,7 +5,9 @@ Run with:
     streamlit run app.py
 """
 
+import base64
 import html
+from pathlib import Path
 
 import streamlit as st
 from PIL import Image, UnidentifiedImageError
@@ -35,7 +37,7 @@ st.set_page_config(
 # makes raw HTML show up as text. This strips indentation/blank lines first.
 # ---------------------------------------------------------------------------
 def render(markup: str) -> None:
-    flat = "".join(line.strip() for line in markup.splitlines())
+    flat = " ".join(line.strip() for line in markup.splitlines() if line.strip())
     st.markdown(flat, unsafe_allow_html=True)
 
 
@@ -65,7 +67,9 @@ html, body, .stApp, [class*="css"] { font-family: 'Inter', sans-serif; }
     background:
         radial-gradient(circle at 10% 0%, #E7F5EC 0%, transparent 40%),
         radial-gradient(circle at 100% 20%, #F1F7E4 0%, transparent 35%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%233FA36B' fill-opacity='0.08'%3E%3Cpath d='M22 34c11-14 27-11 31 0-5 13-20 16-31 0z'/%3E%3Cpath d='M88 96c11-14 27-11 31 0-5 13-20 16-31 0z'/%3E%3Ccircle cx='104' cy='28' r='3.5'/%3E%3Ccircle cx='38' cy='104' r='3.5'/%3E%3Ccircle cx='70' cy='66' r='2'/%3E%3C/g%3E%3C/svg%3E"),
         #F6F9F7;
+    background-attachment: fixed;
 }
 
 header[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
@@ -100,12 +104,18 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none !important; }
 .hero-title span { color: var(--green-300); }
 .hero-sub { position: relative; margin-top: 10px; color: #C4E6D0; font-size: 0.98rem; }
 
-/* ---------- INTRO ---------- */
-.intro {
-    margin-top: 22px; padding: 18px 22px; color: #3B4A41;
-    font-size: 0.95rem; line-height: 1.6; background: #FFFFFF;
-    border: 1px solid var(--line); border-radius: 16px;
+/* ---------- HERO ARTWORK ---------- */
+.hero-art {
+    position: relative; max-width: 560px; margin: 26px auto 0;
+    padding: 14px 18px 8px; border-radius: 20px;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
 }
+.hero-art svg, .hero-art img {
+    display: block; width: 100%; height: auto; border-radius: 14px;
+}
+.hero-art img { max-height: 240px; object-fit: cover; }
 
 /* ---------- SECTION TITLE ---------- */
 .section-title {
@@ -253,22 +263,84 @@ def result_card(icon: str, label: str, value_html: str) -> str:
 # ---------------------------------------------------------------------------
 # Header
 # ---------------------------------------------------------------------------
+LEAF = "M0,-62 C42,-46 48,12 0,64 C-48,12 -42,-46 0,-62 Z"
+VEINS = "M0,-22 L22,-36 M0,2 L28,-14 M0,26 L22,12 M0,-22 L-22,-36 M0,2 L-28,-14 M0,26 L-22,12"
+
+LEAF_SVG = f"""
+<svg viewBox="0 0 600 196" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="Healthy leaf, leaf spot disease and blight">
+  <defs>
+    <linearGradient id="gH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8BE0A8"/><stop offset="1" stop-color="#2E8B57"/>
+    </linearGradient>
+    <linearGradient id="gS" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7CCB7A"/><stop offset="1" stop-color="#4E9A45"/>
+    </linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B7C25A"/><stop offset="1" stop-color="#8A6A2F"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(110,88) rotate(-12) scale(1.15)">
+    <path d="{LEAF}" fill="url(#gH)"/>
+    <path d="M0,-58 L0,62" stroke="#1F5B3A" stroke-opacity=".55" stroke-width="2.2" fill="none"/>
+    <path d="{VEINS}" stroke="#1F5B3A" stroke-opacity=".35" stroke-width="1.6" fill="none"/>
+  </g>
+  <text x="110" y="184" text-anchor="middle" fill="#DFF6E7" font-size="13"
+        font-weight="700" letter-spacing="2" font-family="Inter, sans-serif">HEALTHY</text>
+
+  <g transform="translate(300,88) rotate(6) scale(1.15)">
+    <path d="{LEAF}" fill="url(#gS)"/>
+    <path d="M0,-58 L0,62" stroke="#1F5B3A" stroke-opacity=".5" stroke-width="2.2" fill="none"/>
+    <path d="{VEINS}" stroke="#1F5B3A" stroke-opacity=".3" stroke-width="1.6" fill="none"/>
+    <g fill="#E6C453" fill-opacity=".55">
+      <circle cx="-14" cy="-26" r="11"/><circle cx="16" cy="-6" r="13"/>
+      <circle cx="-12" cy="24" r="10"/><circle cx="14" cy="36" r="8"/>
+    </g>
+    <g fill="#7A4A22">
+      <circle cx="-14" cy="-26" r="5.5"/><circle cx="16" cy="-6" r="6.5"/>
+      <circle cx="-12" cy="24" r="5"/><circle cx="14" cy="36" r="4"/>
+      <circle cx="-2" cy="-44" r="3"/><circle cx="-20" cy="2" r="3.5"/>
+    </g>
+  </g>
+  <text x="300" y="184" text-anchor="middle" fill="#DFF6E7" font-size="13"
+        font-weight="700" letter-spacing="2" font-family="Inter, sans-serif">LEAF SPOT</text>
+
+  <g transform="translate(490,88) rotate(-4) scale(1.15)">
+    <path d="{LEAF}" fill="url(#gB)"/>
+    <path d="M0,-58 L0,62" stroke="#4A3316" stroke-opacity=".5" stroke-width="2.2" fill="none"/>
+    <path d="{VEINS}" stroke="#4A3316" stroke-opacity=".3" stroke-width="1.6" fill="none"/>
+    <path d="M-26,-4 C-30,-22 -8,-30 -2,-14 C6,-2 -10,12 -22,8 Z" fill="#4B2E17" fill-opacity=".85"/>
+    <path d="M10,18 C6,6 26,2 30,16 C32,30 16,38 8,30 Z" fill="#3B2412" fill-opacity=".85"/>
+    <path d="M-6,-50 C4,-56 18,-46 12,-36 C6,-30 -8,-38 -6,-50 Z" fill="#5A3A1E" fill-opacity=".8"/>
+  </g>
+  <text x="490" y="184" text-anchor="middle" fill="#DFF6E7" font-size="13"
+        font-weight="700" letter-spacing="2" font-family="Inter, sans-serif">BLIGHT</text>
+</svg>
+"""
+
+
+@st.cache_data
+def hero_art_html() -> str:
+    """Use assets/hero.(jpg|jpeg|png|webp) if present, else the built-in SVG."""
+    assets = Path(__file__).parent / "assets"
+    for name in ("hero.jpg", "hero.jpeg", "hero.png", "hero.webp"):
+        path = assets / name
+        if path.exists():
+            ext = path.suffix.lstrip(".").lower()
+            mime = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
+            b64 = base64.b64encode(path.read_bytes()).decode()
+            return f'<img src="data:{mime};base64,{b64}" alt="Plant disease leaf">'
+    return LEAF_SVG
+
+
 render(
-    """
+    f"""
     <div class="hero">
         <div class="hero-badge">🌿 LEAF</div>
         <div class="hero-title">Plant Disease <span>Classifier</span></div>
         <div class="hero-sub">Deep Learning Image Classification</div>
-    </div>
-    """
-)
-
-render(
-    """
-    <div class="intro">
-        Upload a photo of a plant leaf and this app will predict the plant
-        species and, if present, the disease affecting it, using a
-        convolutional neural network trained on the New Plant Diseases Dataset.
+        <div class="hero-art">{hero_art_html()}</div>
     </div>
     """
 )
